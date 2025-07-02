@@ -59,7 +59,6 @@ async function handleRequest(request, env) {
     const message = update.message;
     const chatId = message.chat.id;
 
-
     try {
       if (message.text) {
         if (message.text === "/help") {
