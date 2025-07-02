@@ -1,0 +1,10 @@
+name = "parcham-bala-bot" # <-- نام ورکر شما در کلادفلر
+main = "src/index.js"     # <-- مسیر فایل اصلی کد
+compatibility_date = "2023-11-21" # <-- یک تاریخ جدید
+
+[vars]
+# متغیرهای محیطی اینجا قرار نمی‌گیرند، آنها را در داشبورد تنظیم می‌کنیم
+
+[[kv_namespaces]]
+binding = "USER_COUNT_BALE"
+id = "aff44e94a6074380afa5a3050dd0c1e9" # <-- شناسه KV خود را اینجا قرار دهید

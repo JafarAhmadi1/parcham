@@ -1,0 +1,76 @@
+نقشه راه گام به گام (روش ۱۰۰٪ تضمینی)
+این روش ممکن است در ابتدا کمی پیچیده به نظر برسد، اما یک بار که آن را انجام دهید، مدیریت ربات شما بسیار ساده‌تر و حرفه‌ای‌تر خواهد شد.
+پیش‌نیازها:
+یک حساب کاربری در GitHub.
+نصب Node.js و npm روی کامپیوتر شما.
+نصب Git روی کامپیوتر شما.
+مرحله ۱: ساخت پروژه روی کامپیوتر
+یک پوشه جدید برای پروژه خود بسازید و با ترمینال وارد آن شوید:
+Generated bash
+mkdir parcham-bala-worker
+cd parcham-bala-worker
+Use code with caution.
+Bash
+یک پروژه npm جدید ایجاد کنید:
+Generated bash
+npm init -y
+Use code with caution.
+Bash
+این دستور یک فایل package.json ایجاد می‌کند.
+کتابخانه‌های لازم را نصب کنید: wrangler برای مدیریت ورکر و jimp برای پردازش تصویر.
+Generated bash
+npm install jimp
+npm install wrangler --save-dev
+Use code with caution.
+Bash
+یک فایل به نام wrangler.toml بسازید و محتوای زیر را در آن قرار دهید (نام ورکر را با نام ورکر خود در کلادفلر جایگزین کنید):
+Generated toml
+name = "parcham-bala-bot" # <-- نام ورکر شما در کلادفلر
+main = "src/index.js"     # <-- مسیر فایل اصلی کد
+compatibility_date = "2023-11-21" # <-- یک تاریخ جدید
+
+[vars]
+# متغیرهای محیطی اینجا قرار نمی‌گیرند، آنها را در داشبورد تنظیم می‌کنیم
+
+[[kv_namespaces]]
+binding = "USER_COUNT_BALE"
+id = "YOUR_KV_NAMESPACE_ID" # <-- شناسه KV خود را اینجا قرار دهید
+Use code with caution.
+Toml
+نکته: برای پیدا کردن YOUR_KV_NAMESPACE_ID، به صفحه ورکر در داشبورد کلادفلر بروید، Settings > KV و شناسه را از آنجا کپی کنید.
+یک پوشه به نام src بسازید و داخل آن یک فایل به نام index.js ایجاد کنید.
+تمام کد ورکر نهایی شده ما (همانی که قبلاً با jimp نوشتیم) را داخل فایل src/index.js کپی کنید. مهم: خط import را به حالت محلی تغییر دهید:
+Generated javascript
+// src/index.js
+
+// ✅ این فرمت صحیح برای پروژه مبتنی بر npm است
+import Jimp from "jimp";
+
+// ... بقیه کد کامل شما ...
+// const FRAME_IMAGE_URLS = {...}
+// export default { ... }
+// و تمام توابع دیگر
+Use code with caution.
+JavaScript
+مرحله ۲: آپلود پروژه در گیت‌هاب
+یک مخزن (repository) جدید و خالی در حساب گیت‌هاب خود بسازید.
+در ترمینال، داخل پوشه پروژه خود، دستورات زیر را برای اتصال و آپلود پروژه اجرا کنید (آدرس گیت‌هاب خود را جایگزین کنید):
+Generated bash
+git init
+git add .
+git commit -m "Initial commit of the worker"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+git push -u origin main
+Use code with caution.
+Bash
+مرحله ۳: اتصال کلادفلر به گیت‌هاب
+حالا به همان صفحه Settings > Build & deployments در داشبورد کلادفلر بروید.
+روی "Connect to Git" کلیک کنید.
+به حساب گیت‌هاب خود متصل شوید و مخزنی که در مرحله قبل ساختید را انتخاب کنید.
+در تنظیمات بیلد (Build configuration)، کلادفلر معمولاً به صورت خودکار تنظیمات درست را تشخیص می‌دهد. اگر از شما سوالی پرسید:
+Build command: npm install && npx wrangler deploy --minify (این دستور به کلادفلر میگوید چه کار کند) - هرچند معمولا خودش تشخیص میدهد.
+Root directory: / (ریشه پروژه)
+تنظیمات را ذخیره کنید.
+از این به بعد، هر بار که تغییری در کد خود روی کامپیوترتان می‌دهید و آن را به گیت‌هاب push می‌کنید، کلادفلر به طور خودکار بیلد و دیپلوی را برای شما انجام می‌دهد. مشکل خط قرمز و import به طور کامل حل خواهد شد.
+این روش استاندارد و آینده‌نگرانه برای توسعه ورکر است
