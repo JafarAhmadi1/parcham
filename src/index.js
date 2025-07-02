@@ -267,7 +267,7 @@ async function mergeImages(baseImageUrl, overlayImageUrl) {
       opacitySource: 1,
       opacityDest: 1
     });
-
+    // 555555
     // مرحله ۶: دریافت نتیجه نهایی
     return await baseImage.getBufferAsync(Jimp.MIME_PNG);
 
