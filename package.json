@@ -10,7 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "jimp": "^1.6.0"
+    "jimp": "^1.6.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "wrangler": "^4.22.0"
