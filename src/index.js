@@ -3,7 +3,6 @@
 import * as Jimp from "jimp"; // ✅ این روش صحیح است
 // -- پایان تغییر ۱ --
 
-//  اینجا تغییر کرد
 // مقادیر ثابت را اینجا نگه می‌داریم
 const FRAME_IMAGE_URLS = {
   frame1: "https://i.postimg.cc/C1BBK6h4/Parcham-Frame-1.png",
