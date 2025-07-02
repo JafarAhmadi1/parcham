@@ -1,4 +1,4 @@
-# name = "red-moon-03a5" # <-- نام ورکر شما در کلادفلر
+name = "red-moon-03a5"# name = "red-moon-03a5" # <-- نام ورکر شما در کلادفلر
 main = "src/index.js"     # <-- مسیر فایل اصلی کد
 compatibility_date = "2023-11-21" # <-- یک تاریخ جدید
 
