@@ -54,6 +54,7 @@ async function handleRequest(request, env) {
     return new Response("Callback Query Handled", { status: 200 });
   }
 
+
   if (update.message) {
     const message = update.message;
     const chatId = message.chat.id;
@@ -228,33 +229,51 @@ async function getBaleFileUrl(fileId, BOT_TOKEN) {
 
 /**
  * دو تصویر را با استفاده از کتابخانه jimp در حافظه ادغام می‌کند.
+ * این نسخه برای پایداری بیشتر بهینه شده است.
  * @param {string} baseImageUrl - URL تصویر اصلی (عکس پروفایل کاربر).
  * @param {string} overlayImageUrl - URL تصویر رو (قاب PNG).
  * @returns {Promise<Buffer>} - بافر تصویر نهایی با فرمت PNG.
  */
 async function mergeImages(baseImageUrl, overlayImageUrl) {
   try {
-    // دانلود و خواندن هر دو تصویر به صورت همزمان
-    const [baseImage, overlayImage] = await Promise.all([
-      Jimp.read(baseImageUrl),
-      Jimp.read(overlayImageUrl)
+    // مرحله ۱: دانلود هر دو تصویر به صورت موازی
+    const [baseImageResponse, overlayImageResponse] = await Promise.all([
+      fetch(baseImageUrl, { headers: { 'User-Agent': 'Cloudflare-Worker-Bot/1.0' } }),
+      fetch(overlayImageUrl, { headers: { 'User-Agent': 'Cloudflare-Worker-Bot/1.0' } })
     ]);
 
-    // تغییر اندازه تصویر پایه به ابعاد 512x512
-    baseImage.resize(512, 512);
+    // مرحله ۲: بررسی اینکه آیا دانلودها موفقیت‌آمیز بوده‌اند
+    if (!baseImageResponse.ok) {
+      throw new Error(`دانلود تصویر کاربر از بله ناموفق بود. وضعیت: ${baseImageResponse.status}`);
+    }
+    if (!overlayImageResponse.ok) {
+      throw new Error(`دانلود تصویر قاب از postimg.cc ناموفق بود. وضعیت: ${overlayImageResponse.status}`);
+    }
 
-    // قرار دادن قاب روی تصویر پایه
-    // composite قاب را در مختصات (0, 0) روی تصویر پایه قرار می‌دهد.
+    // مرحله ۳: تبدیل پاسخ‌ها به بافر (داده‌های خام)
+    const baseImageBuffer = await baseImageResponse.arrayBuffer();
+    const overlayImageBuffer = await overlayImageResponse.arrayBuffer();
+
+    // مرحله ۴: خواندن تصاویر از بافر توسط Jimp
+    const [baseImage, overlayImage] = await Promise.all([
+      Jimp.read(baseImageBuffer),
+      Jimp.read(overlayImageBuffer)
+    ]);
+
+    // مرحله ۵: پردازش تصویر (بدون تغییر)
+    baseImage.resize(512, 512);
     baseImage.composite(overlayImage, 0, 0, {
       mode: Jimp.BLEND_SOURCE_OVER,
       opacitySource: 1,
       opacityDest: 1
     });
 
-    // دریافت نتیجه نهایی به صورت بافر PNG
+    // مرحله ۶: دریافت نتیجه نهایی
     return await baseImage.getBufferAsync(Jimp.MIME_PNG);
+
   } catch (error) {
-    console.error("خطا در ادغام تصاویر با Jimp:", error);
+    // مرحله ۷: لاگ کردن خطای دقیق و پرتاب یک خطای عمومی
+    console.error("❌ خطای دقیق در mergeImages:", error.message, error.stack);
     throw new Error("پردازش تصویر با خطا مواجه شد.");
   }
 }
