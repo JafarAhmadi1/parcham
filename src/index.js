@@ -63,7 +63,7 @@ async function handleRequest(request, env) {
       if (message.text) {
         if (message.text === "/help") {
           const helpText = `لطفاً تصویری ارسال کن که چهره‌ت به‌خوبی در مرکز تصویر قرار گرفته باشه. این کمک می‌کنه تا قاب دقیق‌تر و زیباتری روی عکس اعمال بشه. 📸🎨`;
-          const deleteKeyboard = { inline_keyboard: [[{ text: "اوکی فهمیدم", callback_data: "delete_this_message" }]] };
+          const deleteKeyboard = { inline_keyboard: [[{ text: "بله فهمیدم", callback_data: "delete_this_message" }]] };
           await sendBaleMessage(chatId, helpText, BOT_TOKEN, deleteKeyboard);
           return new Response("راهنما ارسال شد.", { status: 200 });
         }
